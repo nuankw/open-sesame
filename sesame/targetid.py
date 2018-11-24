@@ -6,9 +6,9 @@ import time
 from optparse import OptionParser
 
 from dynet import *
-from evaluation import *
-from raw_data import make_data_instance
-from semafor_evaluation import convert_conll_to_frame_elements
+from .evaluation import *
+from .raw_data import make_data_instance
+from .semafor_evaluation import convert_conll_to_frame_elements
 
 
 optpr = OptionParser()
@@ -68,7 +68,7 @@ post_train_lock_dicts()
 
 # Read pretrained word embeddings.
 pretrained_map = get_wvec_map()
-PRETRAINED_DIM = len(pretrained_map.values()[0])
+PRETRAINED_DIM = len(next(iter(pretrained_map.values())))
 
 lock_dicts()
 UNKTOKEN = VOCDICT.getid(UNK)
@@ -106,17 +106,17 @@ configuration = {"train": train_conll,
                  "patience": 25,
                  "eval_after_every_epochs": 100,
                  "dev_eval_epoch_frequency": 3}
-configuration_file = os.path.join(model_dir, "configuration.json")
-if options.mode == "train":
-    if options.config:
-        config_json = open(options.config, "r")
-        configuration = json.load(config_json)
-    with open(configuration_file, "w") as fout:
-        fout.write(json.dumps(configuration))
-        fout.close()
-else:
-    json_file = open(configuration_file, "r")
-    configuration = json.load(json_file)
+# configuration_file = os.path.join(model_dir, "configuration.json")
+# if options.mode == "train":
+#     if options.config:
+#         config_json = open(options.config, "r")
+#         configuration = json.load(config_json)
+#     with open(configuration_file, "w") as fout:
+#         fout.write(json.dumps(configuration))
+#         fout.close()
+# else:
+#     json_file = open(configuration_file, "r")
+#     configuration = json.load(json_file)
 
 UNK_PROB = configuration["unk_prob"]
 DROPOUT_RATE = configuration["dropout_rate"]
@@ -136,7 +136,7 @@ PATIENCE = configuration["patience"]
 EVAL_EVERY_EPOCH = configuration["eval_after_every_epochs"]
 DEV_EVAL_EPOCH = configuration["dev_eval_epoch_frequency"] * EVAL_EVERY_EPOCH
 
-sys.stderr.write("\nPARSER SETTINGS (see {})\n_____________________\n".format(configuration_file))
+sys.stderr.write("\nPARSER SETTINGS (see {})\n_____________________\n".format("configuration_file(changed: configuration in targetid.py)"))
 for key in sorted(configuration):
     sys.stderr.write("{}:\t{}\n".format(key.upper(), configuration[key]))
 
@@ -264,7 +264,7 @@ def identify_targets(builders, tokens, postags, lemmas, gold_targets=None):
     lem_x = [l_x[lem] for lem in lemmas]
 
     emb2_xi = []
-    for i in xrange(sentlen):
+    for i in range(sentlen):
         if tokens[i] in pretrained_map:
             # Prevent the pretrained embeddings from being updated.
             emb_without_backprop = lookup(e_x, tokens[i], update=False)
@@ -273,7 +273,7 @@ def identify_targets(builders, tokens, postags, lemmas, gold_targets=None):
             features_at_i = concatenate([emb_x[i], pos_x[i], lem_x[i], u_x])
         emb2_xi.append(w_e * features_at_i + b_e)
 
-    emb2_x = [rectify(emb2_xi[i]) for i in xrange(sentlen)]
+    emb2_x = [rectify(emb2_xi[i]) for i in range(sentlen)]
 
     # Initializing the two LSTMs.
     if USE_DROPOUT and train_mode:
@@ -286,7 +286,7 @@ def identify_targets(builders, tokens, postags, lemmas, gold_targets=None):
 
     losses = []
     predicted_targets = {}
-    for i in xrange(sentlen):
+    for i in range(sentlen):
         if not check_if_potential_target(lemmas[i]):
             continue
         h_i = concatenate([fw_x[i], bw_x[sentlen - i - 1]])
@@ -339,7 +339,7 @@ if options.mode in ["train", "refresh"]:
 
     last_updated_epoch = 0
 
-    for epoch in xrange(NUM_EPOCHS):
+    for epoch in range(NUM_EPOCHS):
         random.shuffle(combined_train)
         for idx, trex in enumerate(combined_train, 1):
             if idx % EVAL_EVERY_EPOCH == 0:

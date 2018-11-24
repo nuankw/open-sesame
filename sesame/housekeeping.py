@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from globalconfig import *
+from .globalconfig import *
 import random
 import sys
 
@@ -59,7 +59,7 @@ class FspDict:
             raise Exception("not in dictionary", itemid)
 
     def printdict(self):
-        print sorted(self._strtoint.keys())
+        print(sorted(self._strtoint.keys()))
 
     def size(self):
         if not self._locked:
@@ -91,7 +91,7 @@ class FspDict:
         """
         :return: Number of unknowns attempted to be added to dictionary
         """
-        # print self._unks
+        # print(self._unks)
         return len(self._unseens), len(self._unks)
 
     def getidset(self):
@@ -123,7 +123,7 @@ def extract_spans(indices):
     """
     indices.sort()
     spans = [(indices[0], indices[0])]
-    for i in xrange(1, len(indices)):
+    for i in range(1, len(indices)):
         if indices[i] == indices[i - 1] + 1:
             o = spans.pop()
             spans.append((o[0], indices[i]))
@@ -142,7 +142,7 @@ def filter_long_ex(dataset, use_span_clip, allowed_spanlen, notanfeid):
     tmpdataset = []
     for ex in dataset:
         haslongfe = False
-        # print "before", ex.invertedfes
+        # print("before", ex.invertedfes)
         for feid in ex.invertedfes:
             haslongspans = False
 
@@ -160,8 +160,8 @@ def filter_long_ex(dataset, use_span_clip, allowed_spanlen, notanfeid):
                 clip_long_spans(ex.invertedfes[feid], allowed_spanlen)
 
         # if haslongfe:
-        #     print "after ", ex.invertedfes
-        # print
+        #     print("after ", ex.invertedfes)
+        # print()
         if haslongfe and not use_span_clip:
             continue  # filter out long examples
         tmpdataset.append(ex)
@@ -174,7 +174,7 @@ def filter_long_ex(dataset, use_span_clip, allowed_spanlen, notanfeid):
 
 def clip_long_spans(spans, maxspanlen):
     faultyspans = []
-    for i in xrange(len(spans)):
+    for i in range(len(spans)):
         span = spans[i]
         spanlen = span[1] - span[0] + 1
         if spanlen <= maxspanlen:
@@ -183,13 +183,13 @@ def clip_long_spans(spans, maxspanlen):
 
     if len(faultyspans) == 0:
         return spans
-    # print ranges
+    # print(ranges)
     for span in faultyspans:
         spanlen = span[1] - span[0] + 1
         numbreaks = spanlen / maxspanlen
         newspans = []
         spanbeg = span[0]
-        for _ in xrange(numbreaks):
+        for _ in range(numbreaks):
             newspans.append((spanbeg, spanbeg + maxspanlen - 1))
             spanbeg += maxspanlen
         if spanlen % maxspanlen != 0:

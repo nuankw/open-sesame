@@ -7,9 +7,9 @@ import xml.etree.ElementTree as et
 
 from nltk.corpus import BracketParseCorpusReader
 
-from conll09 import *
-from globalconfig import *
-from sentence import *
+from .conll09 import *
+from .globalconfig import *
+from .sentence import *
 
 
 def read_conll(conll_file, syn_type=None):
@@ -287,7 +287,7 @@ def get_wvec_map():
     else:
         raise Exception('Pretrained embeddings file needs to be a text file, not archive!',
                         EMBEDDINGS_FILE)
-    wvf = open(embs_file, 'r')
+    wvf = open(embs_file, 'r', encoding='utf-8')
     wvf.readline()
     wd_vecs = {VOCDICT.addstr(line.split(' ')[0]) :
                 [float(f) for f in line.strip().split(' ')[1:]] for line in wvf}
@@ -396,4 +396,3 @@ def read_ptb():
         sys.stderr.write("# PTB sentences: %d\n" %len(sentences))
         ptbsf.close()
     return sentences
-
