@@ -5,13 +5,13 @@ Reads XML files containing FrameNet 1.$VERSION annotations, and converts them to
 import codecs
 import os.path
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+import importlib
+importlib.reload(sys)
 import xml.etree.ElementTree as et
 from optparse import OptionParser
 
-from globalconfig import *
-from xml_annotations import FrameAnnotation, SentenceAnnotation
+from .globalconfig import *
+from .xml_annotations import FrameAnnotation, SentenceAnnotation
 
 
 optpr = OptionParser()
@@ -53,11 +53,13 @@ def write_to_conll(outf, fsp, firstex, sentid):
         mode = "w"
 
     with codecs.open(outf, mode, "utf-8") as outf:
-        for i in xrange(fsp.sent.size()):
+        for i in range(fsp.sent.size()):
             token, postag, nltkpostag, nltklemma, lu, frm, role = fsp.info_at_idx(i)
 
             outf.write(str(i+1) + "\t") # ID = 0
-            outf.write(token.encode('utf-8') + "\t") # FORM = 1
+            # print("type(token):", type(token))
+            # outf.write(token.encode('utf-8') + "\t") # FORM = 1
+            outf.write(token + "\t") # FORM = 1
             outf.write("_\t" + nltklemma + "\t") # LEMMA PLEMMA = 2,3
             outf.write(postag + "\t" + nltkpostag + "\t") # POS PPOS = 4,5
             outf.write(str(sentid-1) + "\t_\t") # FEAT PFEAT = 6,7 ~ replacing FEAT with sentence number
