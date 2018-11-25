@@ -6,6 +6,7 @@ import time
 from optparse import OptionParser
 
 from dynet import *
+# import dynet as dy
 from .evaluation import *
 from .raw_data import make_data_instance
 from .semafor_evaluation import convert_conll_to_frame_elements
@@ -301,10 +302,12 @@ def identify_targets(builders, tokens, postags, lemmas, gold_targets=None):
             is_target = int(i in gold_targets)
 
         if int(np.argmax(logloss.npvalue())) != 0:
+            print("logloss=>np.array, sum\n\n\n", logloss.npvalue(), "\n\n")
             predicted_targets[i] = (create_lexical_unit(lemmas[i], postags[i], tokens[i]), None)
 
         losses.append(pick(logloss, is_target))
-
+    print("!!!!\ type(esum(losses)):", type(esum(losses))) if losses else None
+    print("!!!!\ type((losses)):", type((losses))) if losses else None
     objective = -esum(losses) if losses else None
     return objective, predicted_targets
 
@@ -325,7 +328,7 @@ def print_as_conll(gold_examples, predicted_target_dict):
 best_dev_f1 = 0.0
 if options.mode in ["refresh"]:
     sys.stderr.write("Reloading model from {} ...\n".format(model_file_name))
-    model.populate(model_file_name)
+    model.load(model_file_name)
     with open(os.path.join(model_dir, "best-dev-f1.txt"), "r") as fin:
         for line in fin:
             best_dev_f1 = float(line.strip())
@@ -354,8 +357,11 @@ if options.mode in ["train", "refresh"]:
                 builders, inptoks, trex.postags, trex.lemmas, gold_targets=trex.targetframedict.keys())
             trainex_result = evaluate_example_targetid(trex.targetframedict.keys(), trexpred)
             train_result = np.add(train_result, trainex_result)
-
             if trex_loss is not None:
+                print("type(trex_loss.npvalue())",type(trex_loss.npvalue()))
+                print("type(trex_loss.scalar_value())",type(trex_loss.scalar_value()))
+                print("trex_loss.scalar_value()",trex_loss.scalar_value())
+                sys.exit(2)
                 loss += trex_loss.scalar_value()
                 trex_loss.backward()
                 trainer.update()
@@ -402,7 +408,7 @@ if options.mode in ["train", "refresh"]:
 
 elif options.mode == "test":
     sys.stderr.write("Reading model from {} ...\n".format(model_file_name))
-    model.populate(model_file_name)
+    model.load(model_file_name)
     corpus_tp_fp_fn = [0.0, 0.0, 0.0]
 
     test_predictions = []
@@ -428,7 +434,7 @@ elif options.mode == "test":
 
 elif options.mode == "predict":
     sys.stderr.write("Reading model from {} ...\n".format(model_file_name))
-    model.populate(model_file_name)
+    model.load(model_file_name)
 
     predictions = []
     for instance in instances:

@@ -186,7 +186,7 @@ def clip_long_spans(spans, maxspanlen):
     # print(ranges)
     for span in faultyspans:
         spanlen = span[1] - span[0] + 1
-        numbreaks = spanlen / maxspanlen
+        numbreaks = spanlen // maxspanlen
         newspans = []
         spanbeg = span[0]
         for _ in range(numbreaks):

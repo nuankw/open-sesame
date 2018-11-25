@@ -65,7 +65,7 @@ post_train_lock_dicts()
 lufrmmap, relatedlus = read_related_lus()
 if USE_WV:
     pretrained_embeddings_map = get_wvec_map()
-    PRETRAINED_DIM = len(pretrained_embeddings_map.values()[0])
+    PRETRAINED_DIM = len(next(iter(pretrained_embeddings_map.values())))
 
 lock_dicts()
 UNKTOKEN = VOCDICT.getid(UNK)
@@ -107,17 +107,17 @@ configuration = {'train': train_conll,
                  'patience': 25,
                  'eval_after_every_epochs': 100,
                  'dev_eval_epoch_frequency': 5}
-configuration_file = os.path.join(model_dir, 'configuration.json')
-if options.mode == "train":
-    if options.config:
-        config_json = open(options.config, "r")
-        configuration = json.load(config_json)
-    with open(configuration_file, 'w') as fout:
-        fout.write(json.dumps(configuration))
-        fout.close()
-else:
-    json_file = open(configuration_file, "r")
-    configuration = json.load(json_file)
+# configuration_file = os.path.join(model_dir, 'configuration.json')
+# if options.mode == "train":
+#     if options.config:
+#         config_json = open(options.config, "r")
+#         configuration = json.load(config_json)
+#     with open(configuration_file, 'w') as fout:
+#         fout.write(json.dumps(configuration))
+#         fout.close()
+# else:
+#     json_file = open(configuration_file, "r")
+#     configuration = json.load(json_file)
 
 UNK_PROB = configuration['unk_prob']
 DROPOUT_RATE = configuration['dropout_rate']
@@ -138,7 +138,7 @@ PATIENCE = configuration['patience']
 EVAL_EVERY_EPOCH = configuration['eval_after_every_epochs']
 DEV_EVAL_EPOCH = configuration['dev_eval_epoch_frequency'] * EVAL_EVERY_EPOCH
 
-sys.stderr.write("\nPARSER SETTINGS (see {})\n_____________________\n".format(configuration_file))
+sys.stderr.write("\nPARSER SETTINGS (see {})\n_____________________\n".format("configuration_file(changed: configuration in frameid.py)"))
 for key in sorted(configuration):
     sys.stderr.write("{}:\t{}\n".format(key.upper(), configuration[key]))
 
@@ -265,7 +265,7 @@ def print_as_conll(goldexamples, pred_targmaps):
 best_dev_f1 = 0.0
 if options.mode in ["refresh"]:
     sys.stderr.write("Reloading model from {} ...\n".format(model_file_name))
-    model.populate(model_file_name)
+    model.load(model_file_name)
     with open(os.path.join(model_dir, "best-dev-f1.txt"), "r") as fin:
         for line in fin:
             best_dev_f1 = float(line.strip())
@@ -332,7 +332,7 @@ if options.mode in ["train", "refresh"]:
 
 elif options.mode == "test":
     sys.stderr.write("Loading model from {} ...\n".format(model_file_name))
-    model.populate(model_file_name)
+    model.load(model_file_name)
     corpus_tpfpfn = [0.0, 0.0, 0.0]
 
     testpredictions = []
@@ -404,7 +404,7 @@ elif options.mode == "test":
 
 elif options.mode == "predict":
     sys.stderr.write("Loading model from {} ...\n".format(model_file_name))
-    model.populate(model_file_name)
+    model.load(model_file_name)
 
     predictions = []
     for instance in instances:

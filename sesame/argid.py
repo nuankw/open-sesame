@@ -81,7 +81,7 @@ frmfemap[FRAMEDICT.getid("Removing")].append(FEDICT.getid("Frequency"))
 
 if USE_WV:
     wvs = get_wvec_map()
-    PRETDIM = len(wvs.values()[0])
+    PRETDIM = len(next(iter(wvs.values())))
 
 if USE_HIER:
     frmrelmap, feparents = read_frame_relations()
@@ -145,17 +145,17 @@ configuration = {"train": train_conll,
                  "patience": 3,
                  "eval_after_every_epochs": 100,
                  "dev_eval_epoch_frequency": 5}
-configuration_file = os.path.join(model_dir, "configuration.json")
-if options.mode == "train":
-    if options.config:
-        config_json = open(options.config, "r")
-        configuration = json.load(config_json)
-    with open(configuration_file, "w") as fout:
-        fout.write(json.dumps(configuration))
-        fout.close()
-else:
-    json_file = open(configuration_file, "r")
-    configuration = json.load(json_file)
+# configuration_file = os.path.join(model_dir, "configuration.json")
+# if options.mode == "train":
+#     if options.config:
+#         config_json = open(options.config, "r")
+#         configuration = json.load(config_json)
+#     with open(configuration_file, "w") as fout:
+#         fout.write(json.dumps(configuration))
+#         fout.close()
+# else:
+#     json_file = open(configuration_file, "r")
+#     configuration = json.load(json_file)
 
 UNK_PROB = configuration["unk_prob"]
 DROPOUT_RATE = configuration["dropout_rate"]
@@ -215,7 +215,7 @@ DEV_EVAL_EPOCHS = configuration["dev_eval_epoch_frequency"] * LOSS_EVAL_EPOCH
 
 trainexamples = filter_long_ex(trainexamples, USE_SPAN_CLIP, ALLOWED_SPANLEN, NOTANFEID)
 
-sys.stderr.write("\nPARSER SETTINGS (see {})\n_____________________\n".format(configuration_file))
+sys.stderr.write("\nPARSER SETTINGS (see {})\n_____________________\n".format("configuration_file(changed: configuration in argid.py)"))
 for key in sorted(configuration):
     sys.stderr.write("{}:\t{}\n".format(key.upper(), configuration[key]))
 
@@ -882,7 +882,7 @@ logger = open("{}/argid-prediction-analysis.log".format(model_dir), "w")
 
 if options.mode in ["test", "refresh", "predict"]:
     sys.stderr.write("Reloading model from {} ...\n".format(model_file_name))
-    model.populate(model_file_name)
+    model.load(model_file_name)
 
 best_dev_f1 = 0.0
 if options.mode in ["refresh"]:
