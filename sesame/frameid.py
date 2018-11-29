@@ -265,7 +265,7 @@ def print_as_conll(goldexamples, pred_targmaps):
 best_dev_f1 = 0.0
 if options.mode in ["refresh"]:
     sys.stderr.write("Reloading model from {} ...\n".format(model_file_name))
-    model.load(model_file_name)
+    model.populate(model_file_name)
     with open(os.path.join(model_dir, "best-dev-f1.txt"), "r") as fin:
         for line in fin:
             best_dev_f1 = float(line.strip())
@@ -332,7 +332,7 @@ if options.mode in ["train", "refresh"]:
 
 elif options.mode == "test":
     sys.stderr.write("Loading model from {} ...\n".format(model_file_name))
-    model.load(model_file_name)
+    model.populate(model_file_name)
     corpus_tpfpfn = [0.0, 0.0, 0.0]
 
     testpredictions = []
@@ -404,7 +404,7 @@ elif options.mode == "test":
 
 elif options.mode == "predict":
     sys.stderr.write("Loading model from {} ...\n".format(model_file_name))
-    model.load(model_file_name)
+    model.populate(model_file_name)
 
     predictions = []
     for instance in instances:

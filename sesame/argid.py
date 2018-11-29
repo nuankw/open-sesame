@@ -882,7 +882,7 @@ logger = open("{}/argid-prediction-analysis.log".format(model_dir), "w")
 
 if options.mode in ["test", "refresh", "predict"]:
     sys.stderr.write("Reloading model from {} ...\n".format(model_file_name))
-    model.load(model_file_name)
+    model.populate(model_file_name)
 
 best_dev_f1 = 0.0
 if options.mode in ["refresh"]:

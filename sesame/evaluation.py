@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import numpy as np
 import time
 from .dataio import *
@@ -56,7 +57,9 @@ def evaluate_labeled_example_targetid(goldtargets, prediction):
 
 def evaluate_example_frameid(goldframe, prediction):
     tp = fp = fn = 0.0
-    predframe = prediction.items()[0][1][1]
+    # print("prediction.items()", prediction.items())
+    # sys.exit(1)
+    predframe = list(prediction.items())[0][1][1]
 
     if predframe == goldframe:
         tp += 1
