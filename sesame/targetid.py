@@ -302,12 +302,12 @@ def identify_targets(builders, tokens, postags, lemmas, gold_targets=None):
             is_target = int(i in gold_targets)
 
         if int(np.argmax(logloss.npvalue())) != 0:
-            print("logloss=>np.array, sum\n\n\n", logloss.npvalue(), "\n\n")
+            # print("logloss=>np.array, sum\n\n\n", logloss.npvalue(), "\n\n")
             predicted_targets[i] = (create_lexical_unit(lemmas[i], postags[i], tokens[i]), None)
 
         losses.append(pick(logloss, is_target))
-    print("!!!!\ type(esum(losses)):", type(esum(losses))) if losses else None
-    print("!!!!\ type((losses)):", type((losses))) if losses else None
+    # print("!!!!\ type(esum(losses)):", type(esum(losses))) if losses else None
+    # print("!!!!\ type((losses)):", type((losses))) if losses else None
     objective = -esum(losses) if losses else None
     return objective, predicted_targets
 
@@ -358,10 +358,10 @@ if options.mode in ["train", "refresh"]:
             trainex_result = evaluate_example_targetid(trex.targetframedict.keys(), trexpred)
             train_result = np.add(train_result, trainex_result)
             if trex_loss is not None:
-                print("type(trex_loss.npvalue())",type(trex_loss.npvalue()))
-                print("type(trex_loss.scalar_value())",type(trex_loss.scalar_value()))
-                print("trex_loss.scalar_value()",trex_loss.scalar_value())
-                sys.exit(2)
+                # print("type(trex_loss.npvalue())",type(trex_loss.npvalue()))
+                # print("type(trex_loss.scalar_value())",type(trex_loss.scalar_value()))
+                # print("trex_loss.scalar_value()",trex_loss.scalar_value())
+                # sys.exit(2)
                 loss += trex_loss.scalar_value()
                 trex_loss.backward()
                 trainer.update()
