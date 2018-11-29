@@ -4,14 +4,16 @@ A frame-semantic parser for automatically detecting [FrameNet](https://framenet.
 
 ![Frame-semantics example](fig/fsp-example.png)
 
-## Installation
+## Installation [please notice the edits]
 
 This project is developed using Python 2.7. Other requirements include the [DyNet](http://dynet.readthedocs.io/en/latest/python.html) library, and some [NLTK](https://www.nltk.org/) packages.
+
+#### Edited by Nuan: this forked repository now supports python 3.6 and dynet 2.1. Enjoy!
 
 ```sh
 $ pip install dynet
 $ pip install nltk
-$ python -m nltk.downloader averaged_perceptron_tagger wordnet
+$ python -m nltk.downloader averaged_perceptron_tagger wordnet # Nuan: encountered error when using this, used nltkDownLoader_DisableSSL.py instead
 ```
 
 ## Data Preprocessing
@@ -53,18 +55,6 @@ The $MODELs are specified below. Training saves the best model on validation dat
 
 If training gets interrupted, it can be restarted from the last saved checkpoint by specifying `--mode refresh`.
 
-## Pre-trained Models
-
-The downloads need to be placed under the base-directory. On extraction, these will create a `logs/` directory containing pre-trained models for target identification, frame identification using gold targets, and argument identification using gold targets and frames.
-
-*Note* There is a [known open issue](https://github.com/swabhs/open-sesame/issues/15) about pretrained models not being able to replicate the reported performance on a different machine. It is recommended to train and test from scratch - performance can be replicated (within a small margin of error) to the performance reported below.
-
-|           |  FN 1.5 Dev | FN 1.5 Test | FN 1.5 Models                                                                             |  FN 1.7 Dev | FN 1.7 Test | FN 1.7 Models                                                                             |
-|-----------|------------:|------------:|------------------------------------------------------------------------------------------------------|------------:|------------:|------------------------------------------------------------------------------------------------------|
-| Target ID |       79.85 |       73.23 | [Download](https://drive.google.com/open?id=1xrBKFOwdqLDim2X3kGysV6B8k1ThXDZh) | 80.26 | 73.25 | [Download](https://drive.google.com/open?id=1sS0OPw1uYxeOUK0drkvfZsFkRNgnVUAC) |
-| Frame ID  |       89.27 |       86.40 | [Download](https://drive.google.com/open?id=1Ma1h1x8QDsJFQW047_9KvNLblkxlDdGb) | 89.74 | 86.55 | [Download](https://drive.google.com/open?id=1me1V0CrZF5HVWiDBqZ4LHZVSpsWfW3-8)  |
-| Arg ID    |       60.60 |       59.48 | [Download](https://drive.google.com/open?id=1TopWIEvmzQ8MBypo-xrCAokW4bZg1oGz) | 61.21 | 61.36 | [Download](https://drive.google.com/open?id=1ys-DIGhJSHgt8VjstMtlkPnYqtlzMSHe)  |
-
 ## Test
 
 The different models for target identification, frame identification and argument identification, *need to be executed in that order*.
@@ -99,6 +89,7 @@ Argument identification is based on a segmental recurrent neural net, used as th
 For predicting targets, frames and arguments on unannotated data, pretrained models are needed. Input needs to be specified in a file containing one sentence per line. The following steps result in the full frame-semantic parsing of the sentences:
 
 ```sh
+# for easy copy and paste, check freqCommand.md -- Nuan
 $ python -m sesame.targetid --mode predict \
                             --model_name fn1.7-pretrained-targetid \
                             --raw_input sentences.txt
@@ -124,4 +115,3 @@ For questions and usage issues, please contact `swabha@cs.cmu.edu`. If you use o
   year={2017}
 }
 ```
-
