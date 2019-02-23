@@ -31,6 +31,7 @@ def read_conll(conll_file, syn_type=None):
     next_ex = 0
     with codecs.open(conll_file, "r", "utf-8") as cf:
         snum = -1
+        # print("conll_file: {}".format(conll_file))
         for l in cf:
             l = l.strip()
             if l == "":
@@ -54,6 +55,7 @@ def read_conll(conll_file, syn_type=None):
 
                 elements = []
                 continue
+            # print("l: {}, read_depsyn: {}".format(l, read_depsyn))
             elements.append(CoNLL09Element(l, read_depsyn))
         cf.close()
     sys.stderr.write("# examples in %s : %d in %d sents\n" %(conll_file, len(examples), next_ex))

@@ -82,6 +82,9 @@ elif options.mode  == "test":
     fefile = "{}predicted-{}-frameid-test.fes".format(model_dir, VERSION)
 elif options.mode == "predict":
     assert options.raw_input is not None
+    # print("options.raw_input:")
+    # print(options.raw_input)
+    sys.exit(2)
     instances, _, _ = read_conll(options.raw_input)
     out_conll_file = "{}predicted-frames.conll".format(model_dir)
 else:

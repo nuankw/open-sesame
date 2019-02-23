@@ -21,8 +21,11 @@ class CoNLL09Element:
     """
 
     def __init__(self, conll_line, read_depsyn=None):
+        # print(conll_line)
+        # sys.exit(2)
         ele = conll_line.split("\t")
         lufields = ['_', '_']
+        # print("self.id = int({})".format(ele[0]))
         self.id = int(ele[0])
         self.form = VOCDICT.addstr(ele[1].lower())
         self.nltk_lemma = LEMDICT.addstr(ele[3])
